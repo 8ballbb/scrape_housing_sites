@@ -1,3 +1,9 @@
+### Rough work folder
+rough_work/
+
+## VSCode
+settings.json
+
 ### JupyterNotebooks ###
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
@@ -168,3 +174,5 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
+### MacOS junk
+.DS_Store

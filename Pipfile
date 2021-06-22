@@ -4,8 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pandas = "*"
+requests = "*"
+beautifulsoup4 = "*"
+selenium = "*"
+geopandas = "*"
 
 [dev-packages]
+pytest = "*"
+matplotlib = "*"
+jupyter = "*"
 
 [requires]
 python_version = "3.8"
