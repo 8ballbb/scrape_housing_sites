@@ -3,6 +3,7 @@ rough_work/
 
 ## VSCode
 settings.json
+launch.json
 
 ### JupyterNotebooks ###
 .ipynb_checkpoints

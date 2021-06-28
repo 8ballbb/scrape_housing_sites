@@ -9,11 +9,13 @@ requests = "*"
 beautifulsoup4 = "*"
 selenium = "*"
 geopandas = "*"
+tqdm = "*"
 
 [dev-packages]
 pytest = "*"
 matplotlib = "*"
 jupyter = "*"
+seaborn = "*"
 
 [requires]
 python_version = "3.8"
