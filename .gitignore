@@ -2,6 +2,7 @@
 rough_work/
 
 ## VSCode
+.vscode/
 settings.json
 launch.json
 
