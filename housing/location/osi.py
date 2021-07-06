@@ -1,6 +1,5 @@
 from typing import Union, Iterable
 from functools import partial
-from tqdm import tqdm
 import geopandas as gpd
 
 
@@ -16,9 +15,8 @@ def get_location_info(df):
         df_constituency=df_constituency, 
         df_electoral=df_electoral, 
         df_local_electoral=df_local_electoral)
-    tqdm.pandas()
     df["county_name"], df["small_area"], df["constituency"], df["province"], df["local_electoral"], df["county"] = zip(
-        *df["geometry"].progress_apply(osi_info))
+        *df["geometry"].apply(osi_info))
     return df
 
 
@@ -87,7 +85,7 @@ def get_local_electoral_info(df_local_electoral: gpd.geodataframe.GeoDataFrame, 
 
 def get_small_area_data() -> gpd.geodataframe.GeoDataFrame:
     """TODO: write docstring"""
-    shp_data = "../../data/Small_Areas_Ungeneralised_-_OSi_National_Statistical_Boundaries_-_2015-shp/"
+    shp_data = "data/Small_Areas_Ungeneralised_-_OSi_National_Statistical_Boundaries_-_2015-shp/"
     df_small_area = gpd.read_file(shp_data)
     df_small_area = df_small_area.loc[:, ["COUNTYNAME", "EDNAME", "geometry"]]
     df_small_area = df_small_area.to_crs(epsg=4326)
@@ -96,7 +94,7 @@ def get_small_area_data() -> gpd.geodataframe.GeoDataFrame:
 
 def get_constituency_data() -> gpd.geodataframe.GeoDataFrame:
     """TODO: write docstring"""
-    shp_data = "../../data/Constituency_Boundaries_Ungeneralised_-_OSi_National_Electoral_Boundaries_-_2017/"
+    shp_data = "data/Constituency_Boundaries_Ungeneralised_-_OSi_National_Electoral_Boundaries_-_2017/"
     df_constituency = gpd.read_file(shp_data)
     df_constituency = df_constituency.to_crs(epsg=4326)
     df_constituency["constituency"] = df_constituency["CON_SEAT_"].str.replace(r"(.+) \(\d\)", r"\1", regex=True)
@@ -106,7 +104,7 @@ def get_constituency_data() -> gpd.geodataframe.GeoDataFrame:
 
 def get_electoral_data() -> gpd.geodataframe.GeoDataFrame:
     """TODO: write docstring"""
-    shp_data = "../../data/CSO_Electoral_Divisions_Ungeneralised_-_OSi_National_Statistical_Boundaries_-_2015-shp/"
+    shp_data = "data/CSO_Electoral_Divisions_Ungeneralised_-_OSi_National_Statistical_Boundaries_-_2015-shp/"
     df_electoral = gpd.read_file(shp_data)
     df_electoral = df_electoral.to_crs(epsg=4326)
     df_electoral = df_electoral.loc[:, ["CSOED_34_1", "PROVINCE", "geometry"]]
@@ -115,10 +113,10 @@ def get_electoral_data() -> gpd.geodataframe.GeoDataFrame:
 
 def get_local_electoral_data() -> gpd.geodataframe.GeoDataFrame:
     """TODO: write docstring"""
-    shp_data = "../../data/Local_Electoral_Areas_-_OSi_National_Statutory_Boundaries-shp/"
-    df_local_electoral = gpd.read_file(shp_data, )
+    shp_data = "data/Local_Electoral_Areas_-_OSi_National_Statutory_Boundaries-shp/"
+    df_local_electoral = gpd.read_file(shp_data)
     df_local_electoral = df_local_electoral.to_crs(epsg=4326)
-    df_local_electoral = df_local_electoral.loc[:, ["ENGLISH", "geometry"]]
+    df_local_electoral = df_local_electoral.loc[:, ["COUNTY", "ENGLISH", "geometry"]]
     df_local_electoral["local_electoral"] = (df_local_electoral["ENGLISH"]
                                                  .str.replace(r"( LEA-\d|-LEA-\d)", "", regex=True)
                                                  .str.title())

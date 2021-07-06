@@ -47,7 +47,7 @@ def get_soup_dynamic(url: str, browser_options: Options) -> BeautifulSoup:
     with webdriver.Chrome(options=browser_options) as driver:
         try:
             driver.get(url)
-            driver.implicitly_wait(5)
+            # driver.implicitly_wait(5)
             accept_daft_cookies(driver)
             scroll_page(driver)
             soup = BeautifulSoup(driver.page_source, features="lxml")
@@ -270,7 +270,7 @@ def scrape_listing_pages(
         soup = get_soup_dynamic(url, browser_options=browser_options())
         if soup is not None:
             property_listings.extend([listing for listing in scrape_listings(soup)])
-        sleep(2)
+        # sleep(2)
     # Create dataframe of property listings
     df = pd.DataFrame(property_listings).drop_duplicates(subset=["address", "price"])
     format_df(df)
@@ -290,9 +290,8 @@ def scrape_daft_for_sale(
         df_old.loc[df_old["href"].isin(set(df_old["href"]).difference(df_new["href"])), "sold"] = 1
         # subset of new listing
         df_new = df_new.loc[df_new["href"].isin(set(df_new["href"]).difference(df_old["href"]))]
-    tqdm.pandas()
     df_new["date_posted"], df_new["views"], df_new["desc"], df_new["features"], df_new["lng"], df_new["lat"] = zip(
-        *df_new["href"].progress_apply(scrape_property_page))
+        *df_new["href"].apply(scrape_property_page))
     df_new["date_scraped"] = datetime.now()
     df_new["date_scraped"] = pd.to_datetime(df_new["date_scraped"])
     df_new["date_posted"] = pd.to_datetime(df_new["date_posted"])
