@@ -31,3 +31,13 @@ Example:
 ```bash
 $ python create_dataset.py -f rough_work/data/test_4.tsv -l dublin meath kildare wicklow --price_from 0 --price_to 10000000 --beds 2
 ```
+
+## TODO
+
+* Scheduling
+* Date of sale
+* Load / Save AWS
+* Floor-area metric
+* Refactor
+* Testing
+* MyHome scraper

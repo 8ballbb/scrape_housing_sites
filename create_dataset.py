@@ -43,7 +43,7 @@ def classify_estate_agents(df):
 def main():
     args = get_args()
     try:
-        df_old = pd.read_csv(args.filename, "\t", index_col=0)
+        df_old = pd.read_csv(args.filename, sep="\t", index_col=0)
         df_new = scrape_daft_for_sale(
             locations=args.locations, 
             price_from=args.price_from, 

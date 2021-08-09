@@ -227,12 +227,15 @@ def format_df(df: pd.DataFrame):
         df.loc[df["baths"].notna(), "baths"]
             .str.replace(" Bath", "")
             .astype(int))
-    na_filter = df["floor-area"].notna()
+    na_filter = df["floor-area"].isna()
     df["floor-area-metric"] = np.where(df["floor-area"].str.contains("ac"), "ac", "m2")
-    df.loc[na_filter, "floor-area"] = (
-        df.loc[na_filter, "floor-area"]
+    df.loc[na_filter, "floor-area-metric"] = None
+    df.loc[~na_filter, "floor-area"] = (
+        df.loc[~na_filter, "floor-area"]
             .str.replace(r" (m²|ac)", "", regex=True)
             .astype(float))
+    # Fix issues in data i.e. incorrect metric
+    # df.loc[(df["floor-area-metric"]=="ac") & (df["floor-area"]>20), "floor-area-metric"] = "m2"
     df["sold"] = 0  # add binary indicator i.e. 0 not sold, 1 sold
 
 
