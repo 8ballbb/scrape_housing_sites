@@ -285,17 +285,17 @@ def scrape_daft_for_sale(
     price_from: Union[int, None]=None, 
     price_to: Union[int, None]=None, 
     min_beds: Union[str, None]=None, 
-    df_old: Union[pd.DataFrame, None]=None) -> pd.DataFrame:
+    df_data: Union[pd.DataFrame, None]=None) -> pd.DataFrame:
     """Scrape all property sale listings on Daft"""
-    df_new = scrape_listing_pages(locations, price_from, price_to, min_beds)
-    if df_old is not None:
+    df = scrape_listing_pages(locations, price_from, price_to, min_beds)
+    if df_data is not None:
         # check if listings were sold and assign 1 if sold
-        df_old.loc[df_old["href"].isin(set(df_old["href"]).difference(df_new["href"])), "sold"] = 1
+        df_data.loc[df_data["href"].isin(set(df_data["href"]).difference(df["href"])), "sold"] = 1
         # subset of new listing
-        df_new = df_new.loc[df_new["href"].isin(set(df_new["href"]).difference(df_old["href"]))]
-    df_new["date_posted"], df_new["views"], df_new["desc"], df_new["features"], df_new["lng"], df_new["lat"] = zip(
-        *df_new["href"].apply(scrape_property_page))
-    df_new["date_scraped"] = datetime.now()
-    df_new["date_scraped"] = pd.to_datetime(df_new["date_scraped"])
-    df_new["date_posted"] = pd.to_datetime(df_new["date_posted"])
-    return df_new
+        df = df.loc[df["href"].isin(set(df["href"]).difference(df_data["href"]))]
+    df["date_posted"], df["views"], df["desc"], df["features"], df["lng"], df["lat"] = zip(
+        *df["href"].apply(scrape_property_page))
+    df["date_scraped"] = datetime.now()
+    df["date_scraped"] = pd.to_datetime(df["date_scraped"])
+    df["date_posted"] = pd.to_datetime(df["date_posted"])
+    return df

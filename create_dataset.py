@@ -8,8 +8,10 @@ def get_args():
     """Function to parse input arguments"""
     parser = argparse.ArgumentParser(description="Scrape property information")
     parser.add_argument("-f", "--filename", required=True, help="""
-        Filepath or URL to save data to and / or where previously scraped data
-        is stored.
+        Filepath or URL to save data to
+    """)
+    parser.add_argument("-d", "--data", required=True, help="""
+        Filepath or URL where previously scraped data is stored.
     """)
     parser.add_argument("-l", "--locations", nargs="+", help="""
         Specify a list of county locations.
@@ -43,24 +45,24 @@ def classify_estate_agents(df):
 def main():
     args = get_args()
     try:
-        df_old = pd.read_csv(args.filename, sep="\t", index_col=0)
-        df_new = scrape_daft_for_sale(
+        df_data = pd.read_csv(args.data, sep="\t", index_col=0)
+        df = scrape_daft_for_sale(
             locations=args.locations, 
             price_from=args.price_from, 
             price_to=args.price_to, 
             min_beds=args.beds, 
-            df_old=df_old)
-        get_location_info(df_new)
-        classify_estate_agents(df_new)
-        df_new = pd.concat([df_old, df_new]).reset_index(drop=True)
+            df_data=df_data)
+        get_location_info(df)
+        classify_estate_agents(df)
+        df = pd.concat([df_data, df]).reset_index(drop=True)
     except (FileNotFoundError, urllib.request.HTTPError):
-        df_new = scrape_daft_for_sale(
+        df = scrape_daft_for_sale(
             locations=args.locations, 
             price_from=args.price_from, 
             price_to=args.price_to, 
             min_beds=args.beds)
-        get_location_info(df_new)
-    df_new.to_csv(args.filename, "\t")
+        get_location_info(df)
+    df.to_csv(args.filename, "\t")
 
 
 if __name__ == "__main__":
