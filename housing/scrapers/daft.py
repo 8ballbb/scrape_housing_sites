@@ -8,7 +8,8 @@ import numpy as np
 import pandas as pd
 import requests
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import WebDriverException, SessionNotCreatedException
 from selenium.webdriver.chrome.options import Options
 from tqdm import tqdm
 
@@ -42,18 +43,27 @@ def accept_daft_cookies(driver: webdriver):
     elem.click()
 
 
+def load_dynamic_page(url, driver):
+    """TODO: """
+    driver.get(url)
+    accept_daft_cookies(driver)
+    scroll_page(driver)
+    return driver
+
+
 def get_soup_dynamic(url: str, browser_options: Options) -> BeautifulSoup:
     """Get contents of a dynamic webpage and return as a BeautifulSoup object"""
-    with webdriver.Chrome(options=browser_options) as driver:
-        try:
-            driver.get(url)
-            # driver.implicitly_wait(5)
-            accept_daft_cookies(driver)
-            scroll_page(driver)
+    try:
+        with webdriver.Chrome(options=browser_options) as driver:
+            driver = load_dynamic_page(url, driver)
             soup = BeautifulSoup(driver.page_source, features="lxml")
-        except WebDriverException:
-            print(url)
-            soup = None
+    except SessionNotCreatedException:
+        with webdriver.Chrome(ChromeDriverManager().install(), options=browser_options) as driver:
+            driver = load_dynamic_page(url, driver)
+            soup = BeautifulSoup(driver.page_source, features="lxml")
+    except WebDriverException:
+        print(url)
+        soup = None
     return soup
 
 
