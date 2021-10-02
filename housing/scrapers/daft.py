@@ -74,6 +74,9 @@ def get_soup_static(url: str) -> Union[BeautifulSoup, None]:
     except requests.exceptions.ConnectionError as e:
         print(e, "-static-", url)
         soup = None
+    except requests.exceptions.ChunkedEncodingError as e:
+        print(e, "-static-", url)
+        soup = None
     return soup
 
 
@@ -299,10 +302,13 @@ def scrape_daft_for_sale(
     """Scrape all property sale listings on Daft"""
     df = scrape_listing_pages(locations, price_from, price_to, min_beds)
     if df_data is not None:
+        # TODO: issue here. Need to think about how to handle tracking listings being taken down and being put back up
         # check if listings were sold and assign 1 if sold
-        df_data.loc[df_data["href"].isin(set(df_data["href"]).difference(df["href"])), "sold"] = 1
+        df_data.loc[
+            df_data["href"].isin(set(df_data["href"]).difference(df["href"])), "sold"] = 1
         # subset of new listing
         df = df.loc[df["href"].isin(set(df["href"]).difference(df_data["href"]))]
+        print(f"\n{len(df)} new house listings listings\n")
     df["date_posted"], df["views"], df["desc"], df["features"], df["lng"], df["lat"] = zip(
         *df["href"].apply(scrape_property_page))
     df["date_scraped"] = datetime.now()
