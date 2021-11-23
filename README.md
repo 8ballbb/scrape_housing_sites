@@ -1,43 +1,25 @@
 # Property Data
 
-The purpose of this repo is to create a dataset used for a web application, which performs an analysis of the property market for Dublin and the commuter counties of Kildare, Meath and Wicklow.
+The purpose of this repo is to scrape property market data for Dublin and the commuter counties of Kildare, Meath and Wicklow.
 
 ## Setup
-
-* Virtualenv
-
-```bash
-$ pip install -r requirements.txt
-```
 
 * Pipenv
 
 ```bash
-$ pipenv shell
+pipenv shell
 ```
 
-## Command Line
+## Usage
 
-To retrieve property for sale information, `create_dataset.py` script is used with the following arguments:
-
-* --filename / -f: filepath to save information. Note that if information was previously saved. Specifying this path will append new information.
-* --locations / -l: locations to scrape information for. Default locations are Dublin, Meath, Kildare and Wicklow
-* --price_from: Lower bound of price range to scrape information for. Default value is 0.
-* --price_to: Upper bound of price range to scrape information for. Default value is 10000000.
-* --beds: Lower bound of number of beds range to scrape information for. Default value is 2.
-
-Example:
+* Scrape data
 
 ```bash
-$ python create_dataset.py -f rough_work/data/test_4.tsv -l dublin meath kildare wicklow --price_from 0 --price_to 10000000 --beds 2
+python create_dataset.py
 ```
 
-## TODO
+* Scrape data and append to existing data
 
-* Scheduling
-* Date of sale
-* Load / Save AWS
-* Floor-area metric
-* Refactor
-* Testing
-* MyHome scraper
+```bash
+python create_dataset.py -d {data.tsv}
+```
