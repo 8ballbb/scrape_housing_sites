@@ -2,6 +2,7 @@ from housing import scrape_daft
 import argparse
 from datetime import datetime
 import os
+from fake_useragent import UserAgent
 import pandas as pd
 
 
@@ -20,7 +21,7 @@ def main():
         "pragma": "no-cache",
         "dnt": "1",
         "sec-ch-ua-mobile": "?0",
-        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
+        "user-agent": UserAgent().chrome,
         "content-type": "application/json",
         "accept": "application/json",
         "cache-control": "no-cache, no-store",

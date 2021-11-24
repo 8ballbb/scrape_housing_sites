@@ -15,8 +15,10 @@ tqdm = "*"
 beautifulsoup4 = "*"
 geopandas = "*"
 lxml = "*"
+fake-useragent = "*"
 
 [dev-packages]
+jupyter = "*"
 
 [requires]
 python_version = "3.8"
