@@ -1,17 +1,9 @@
 from housing import scrape_daft
-import argparse
+from glob import glob
 from datetime import datetime
 import os
 from fake_useragent import UserAgent
 import pandas as pd
-
-
-def get_args():
-    """Function to parse input arguments"""
-    parser = argparse.ArgumentParser(description="Scrape property information")
-    parser.add_argument("-d", "--data", help="""
-        Filepath of previously scraped data is stored""")
-    return parser.parse_args()
 
 
 def main():
@@ -36,17 +28,18 @@ def main():
         "referer": "https://www.daft.ie/",
         "accept-language": "en-US,en;q=0.9"
     }
-    args = get_args()
-    try:
-        df_old_listings = pd.read_csv(args.data, sep="\t", index_col=0)  # read previous data scraped
-    except FileNotFoundError:
+    data_dir = "data"
+    if os.path.exists(data_dir):
+        latest_file = max(glob(f"{data_dir}/*"), key=os.path.getctime)
+        df_old_listings = pd.read_csv(latest_file, sep="\t", index_col=0)  # read previous data scraped
+    else:
         df_old_listings = None
     df = scrape_daft(headers, df_old_listings=df_old_listings)
-    
-    if not os.path.exists("data"):
-        os.makedirs("data")
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
     date = datetime.now().strftime('%Y_%m_%d')
-    df.to_csv(f"data/{date}.tsv", "\t")
+    print(f"\n{len(df)} total listings\n")
+    df.to_csv(f"{data_dir}/{date}.tsv", "\t")
 
 
 if __name__ == "__main__":
